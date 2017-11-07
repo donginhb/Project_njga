@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PlanCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PlanCon_del`;
+
+DELIMITER $$
+
+CREATE /*!50017 DEFINER = 'root'@'%' */
+    TRIGGER `EV9000DB`.`trig_PlanCon_del` BEFORE DELETE ON `PlanConfig` 
+    FOR EACH ROW BEGIN
+        DELETE FROM PlanActionConfig WHERE PlanID = old.ID;
+        DELETE FROM PlanPermissionConfig WHERE PlanID = old.ID;
+    END;$$
+
+DELIMITER ;

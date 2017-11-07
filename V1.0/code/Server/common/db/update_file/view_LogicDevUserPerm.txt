@@ -1,0 +1,17 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.views WHERE table_schema = 'EV9000DB' AND table_name = 'View_LogicDevUserPerm') THEN  
+        CREATE VIEW `View_LogicDevUserPerm` AS SELECT B.UserIndex,A.DeviceIndex FROM `UserGroupDevicePermConfig` A ,`UserMapGroupConfig` B WHERE A.GroupID = B.GroupID UNION  SELECT UserIndex ,DeviceIndex FROM `UserDevicePermConfig`;   
+END IF;  
+
+IF NOT EXISTS (SELECT * FROM information_schema.views WHERE table_schema = 'EV9000DB' AND table_name = 'View_LogicDevUserPermEx') THEN  
+        CREATE VIEW `View_LogicDevUserPermEx` AS SELECT DISTINCT * FROM View_LogicDevUserPerm;   
+END IF; 
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

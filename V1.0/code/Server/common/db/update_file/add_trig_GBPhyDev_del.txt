@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev_del`;
+
+DELIMITER $$
+CREATE /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_GBPhyDev_del` BEFORE DELETE
+    ON GBPhyDeviceConfig
+    FOR EACH ROW BEGIN
+        DELETE FROM GBLogicDeviceConfig WHERE PhyDeviceIndex = old.ID; 
+        DELETE FROM GBPhyDevicePermConfig  WHERE GBPhyDeviceIndex = old.ID;
+        DELETE FROM TopologyPhyDeviceConfig WHERE DeviceID = old.DeviceID; 
+    END$$
+DELIMITER ;

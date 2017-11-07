@@ -1,0 +1,63 @@
+body{
+    margin:0px;
+    padding:0px;
+    height:100%;
+}
+
+#top{
+    height: 100px;
+    padding-top: 5px;
+    background-color: #225894;
+}
+
+#left{
+    min-height: 900px;
+}
+
+#caidan{
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#caidan a{
+    color:white;
+    font-size: 18px;
+    text-align: center;
+}
+
+#caidan a:hover{
+    color:black;
+}
+
+.page{
+    margin-bottom: 10px;
+}
+
+.page a{
+    margin-left: 10px;
+}
+
+.page .current{
+    margin-left: 10px;
+}
+
+#data_table td{
+    vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

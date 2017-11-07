@@ -1,0 +1,31 @@
+use EV9000LOG_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'SystemLogRecord' AND column_name = 'LogInfo') THEN  
+        ALTER TABLE SystemLogRecord MODIFY LogInfo VARCHAR(512);  
+END IF;   
+
+IF EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'SystemLogRecord' AND column_name = 'DeviceIP') THEN  
+        ALTER TABLE SystemLogRecord MODIFY DeviceIP varchar(36) DEFAULT NULL;  
+END IF;
+
+IF EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'SystemLogRecord' AND column_name = 'DeviceIndex') THEN  
+        ALTER TABLE SystemLogRecord MODIFY DeviceIndex int(10) unsigned DEFAULT '0';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'SystemLogRecord' AND column_name = 'LogicDeviceIndex') THEN  
+        ALTER TABLE SystemLogRecord ADD LogicDeviceIndex int(10) unsigned DEFAULT '0';  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();
+
+ 
+ 
+ 
+
+

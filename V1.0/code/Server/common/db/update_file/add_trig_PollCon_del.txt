@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PollCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PollCon_del`;
+
+DELIMITER $$
+
+CREATE /*!50017 DEFINER = 'root'@'%' */
+    TRIGGER `EV9000DB`.`trig_PollCon_del` BEFORE DELETE ON `PollConfig` 
+    FOR EACH ROW BEGIN 
+        DELETE FROM PollActionConfig WHERE PollID = old.ID;
+        DELETE FROM PollPermissionConfig WHERE PollID = old.ID; 
+    END;$$
+
+DELIMITER ;

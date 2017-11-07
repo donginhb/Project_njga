@@ -1,0 +1,11 @@
+USE `EV9000LOG`;
+
+SET GLOBAL event_scheduler = ON;
+
+DROP EVENT IF EXISTS event_userlog_del;
+CREATE EVENT event_userlog_del
+ON SCHEDULE EVERY 1 DAY
+STARTS DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')
+ENABLE
+DO
+DELETE FROM `EV9000LOG`.`UserLogRecord` WHERE `EV9000LOG`.`UserLogRecord`.`Time` < (UNIX_TIMESTAMP(NOW())-(SELECT `KeyValue` FROM `EV9000DB`.`SystemConfig` WHERE `EV9000DB`.`SystemConfig`.`KeyName` LIKE 'DaysToKeepForSystemLog'))

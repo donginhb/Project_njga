@@ -1,0 +1,17 @@
+USE EV9000LOG_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change;  
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN 
+
+   IF NOT EXISTS (SELECT * FROM information_schema.statistics WHERE table_schema = 'EV9000LOG_MOBILE' AND table_name = 'SystemLogRecord' AND index_name = 'SystemLogRecordLogTime') THEN  
+      ALTER TABLE `SystemLogRecord` ADD INDEX SystemLogRecordLogTime ( `LogTime` );
+   END IF;  
+   
+   IF NOT EXISTS (SELECT * FROM information_schema.statistics WHERE table_schema = 'EV9000LOG_MOBILE' AND table_name = 'AlarmRecord' AND index_name = 'AlarmRecordStartTime') THEN  
+      ALTER TABLE `AlarmRecord` ADD INDEX AlarmRecordStartTime ( `StartTime` );
+   END IF;  
+   
+END$$
+DELIMITER ;  
+CALL schema_change(); 

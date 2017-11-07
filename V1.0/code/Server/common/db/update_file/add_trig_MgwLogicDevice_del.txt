@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_MgwLogicDevice_del`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_MgwLogicDevice_del` BEFORE DELETE
+    ON MgwLogicDeviceConfig
+    FOR EACH ROW BEGIN
+        DELETE FROM `GBLogicDeviceConfig` WHERE DeviceID = old.LogicDeviceID;
+    END$$
+
+DELIMITER ;

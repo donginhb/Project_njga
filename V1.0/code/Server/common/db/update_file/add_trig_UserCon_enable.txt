@@ -1,0 +1,16 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_enable`;
+
+DELIMITER $$
+
+CREATE /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_UserCon_enable` AFTER UPDATE
+    ON UserConfig
+    FOR EACH ROW BEGIN IF new.Enable = 0 THEN
+        DELETE FROM UserDevicePermConfig WHERE UserIndex = new.ID; 
+        DELETE FROM UserMapGroupConfig WHERE UserIndex = new.ID;
+    END IF; END$$
+
+DELIMITER ; 

@@ -1,0 +1,16 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PresetConfig_del`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_PresetConfig_del` BEFORE DELETE
+    ON PresetConfig
+    FOR EACH ROW BEGIN
+        DELETE FROM CruiseActionConfig WHERE PresetID = old.PresetID AND DeviceIndex = old.DeviceIndex;
+        DELETE FROM PlanActionConfig WHERE Type = 2 AND ControlData = old.ID;
+    END$$
+
+DELIMITER ;

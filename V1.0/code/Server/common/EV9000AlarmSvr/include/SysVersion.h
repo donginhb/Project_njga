@@ -1,0 +1,11 @@
+#if !defined __SYSTEM_VERSION__INCLUDED_
+#define __SYSTEM_VERSION__INCLUDED_
+
+#define SYSTEM_VERSION 1.0.0.1	//∞Ê±æ∫≈
+
+//º”√‹π∑
+#define DOG_PASSWORD_HI		"19810917"
+#define DOG_PASSWORD_LO		"19830729"
+#define DOG_DEFAULT_KEYT	"321202198307293916"
+
+#endif

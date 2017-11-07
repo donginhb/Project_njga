@@ -1,0 +1,21 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBPhyDeviceConfig' AND column_name = 'TransferProtocol') THEN  
+        ALTER TABLE GBPhyDeviceConfig ADD TransferProtocol INTEGER UNSIGNED DEFAULT 0 NOT NULL;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBPhyDeviceConfig' AND column_name = 'TCPSetup') THEN  
+        ALTER TABLE GBPhyDeviceConfig ADD TCPSetup INTEGER UNSIGNED DEFAULT 0 NOT NULL;  
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBPhyDeviceConfig' AND column_name = 'TCPConnection') THEN  
+        ALTER TABLE GBPhyDeviceConfig ADD TCPConnection INTEGER UNSIGNED DEFAULT 0 NOT NULL;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

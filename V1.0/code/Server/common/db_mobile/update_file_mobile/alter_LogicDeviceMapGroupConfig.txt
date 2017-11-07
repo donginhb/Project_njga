@@ -1,0 +1,1 @@
+ALTER TABLE `EV9000DB_MOBILE`.`LogicDeviceMapGroupConfig` ADD INDEX indx_DeviceIndex (`DeviceIndex`);

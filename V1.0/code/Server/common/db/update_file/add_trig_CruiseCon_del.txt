@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_CruiseCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_CruiseCon_del`;
+
+DELIMITER $$
+
+CREATE /*!50017 DEFINER = 'root'@'%' */
+    TRIGGER `EV9000DB`.`trig_CruiseCon_del` BEFORE DELETE ON `CruiseConfig` 
+    FOR EACH ROW BEGIN
+        DELETE FROM CruiseActionConfig WHERE CruiseID = old.ID;
+        DELETE FROM CruisePermissionConfig WHERE CruiseID = old.ID;
+    END;$$
+
+DELIMITER ;

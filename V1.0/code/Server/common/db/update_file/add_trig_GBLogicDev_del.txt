@@ -1,0 +1,31 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_del_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_del`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_GBLogicDev_del` BEFORE DELETE
+    ON GBLogicDeviceConfig
+    FOR EACH ROW BEGIN
+        DELETE FROM LogicDeviceMapGroupConfig  WHERE DeviceIndex = old.ID;
+        DELETE FROM UserLogicDeviceMapGroupConfig  WHERE DeviceIndex = old.ID;
+        DELETE FROM RecordSchedConfig  WHERE DeviceIndex = old.ID;
+        DELETE FROM UserDevicePermConfig  WHERE DeviceIndex = old.ID;
+        DELETE FROM UserGroupDevicePermConfig  WHERE DeviceIndex = old.ID;
+        DELETE FROM CruiseConfig WHERE DeviceIndex = old.ID;
+        DELETE FROM CruiseActionConfig WHERE DeviceIndex = old.ID;
+        DELETE FROM PresetConfig WHERE DeviceIndex = old.ID;
+        DELETE FROM PollActionConfig WHERE SourceID = old.DeviceID || DestID = old.DeviceID;
+        DELETE FROM PlanActionConfig WHERE DeviceIndex = old.ID;
+        DELETE FROM RouteDevicePermConfig WHERE DeviceIndex = old.ID;
+        DELETE FROM GBPhyDevicePermConfig WHERE DeviceIndex = old.ID;
+        SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'EV9000DB_MOBILE' AND table_name = 'GBLogicDeviceConfig';
+        IF (@maccount>0) THEN
+            DELETE FROM EV9000DB_MOBILE.GBLogicDeviceConfig WHERE DeviceID = old.DeviceID;        
+        END IF;  
+    END$$
+
+DELIMITER ;

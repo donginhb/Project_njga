@@ -1,0 +1,13 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB_MOBILE' AND table_name = 'UserLogicDeviceMapGroupConfig' AND column_name = 'Name') THEN  
+        ALTER TABLE UserLogicDeviceMapGroupConfig ADD Name VARCHAR(36) DEFAULT NULL;  
+END IF;   
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

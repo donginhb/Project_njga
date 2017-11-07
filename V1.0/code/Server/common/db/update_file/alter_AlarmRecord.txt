@@ -1,0 +1,3 @@
+use EV9000LOG;
+
+ALTER TABLE AlarmRecord MODIFY Info VARCHAR(512);

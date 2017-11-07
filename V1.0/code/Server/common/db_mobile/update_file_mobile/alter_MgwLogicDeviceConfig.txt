@@ -1,0 +1,21 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'MgwLogicDeviceConfig' AND column_name = 'StreamMark_Sub') THEN  
+        ALTER TABLE `MgwLogicDeviceConfig` ADD StreamMark_Sub VARCHAR(36) NULL;
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'MgwLogicDeviceConfig' AND column_name = 'RtspToken_Sub') THEN  
+        ALTER TABLE `MgwLogicDeviceConfig` ADD RtspToken_Sub VARCHAR(132) NULL;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'MgwLogicDeviceConfig' AND column_name = 'ChannelRemark_Sub') THEN  
+        ALTER TABLE `MgwLogicDeviceConfig` ADD ChannelRemark_Sub VARCHAR(52) NULL; 
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

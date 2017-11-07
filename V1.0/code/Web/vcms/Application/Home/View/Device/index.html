@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<include file="public/head" />
+<title>设备监测</title>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <include file="public/top" />
+        </div>
+        <div class="row">
+            <div class="col-md-2" style="background-color: #2d70ba">
+                <include file="public/left" />
+            </div>
+            <div class="col-md-10">
+                <div style="margin-top: 20px;display:block;" id="deviceMonitor_main">
+                    <table id="data_table" class="table table-striped">
+                        <tr>
+                            <td>选中</td>
+                            <td>压缩设备ip地址</td>
+                            <td>设备状态</td>
+                            <td>设备注册超时时间</td>
+                            <td>当前压缩任务数</td>
+                        </tr>
+                        <volist name="list" id="vo">
+                            <tr id="tr_{$vo.id}">
+                                <td><input name="checkbox" id="{$vo.id}" value="{$vo.id}" type="checkbox" /> </td>
+                                <td>{$vo.deviceip}</td>
+                                <eq name="vo.status" value="0">
+                                    <td>不在线</td>
+                                    <else />
+                                    <td>在线</td>
+                                </eq>
+                                <td>{$vo.expires}</td>
+                                <td><a href="javascript:void(0);" onclick="deviceMonitor_detail('{$vo.deviceip}', '{$vo.num}');">{$vo.num}</a></td>
+                            </tr>
+                        </volist>
+                    </table>
+                    <div>
+                        <span><button id="checkallBtn" class="btn">全选 </button></span>
+                        <span><button id="reverseallBtn" class="btn">反选 </button></span>
+                        <span><button id="deleteBtn" class="btn">删除 </button></span>
+                        <span><button id="refreshBtn" class="btn">刷新 </button></span>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;display:none;" id="deviceMonitor_detail">
+                    <div>
+                        <table style="width: 100%;font-size:16px;font-weight:bold;">
+                            <tr>
+                                <td style="background: #BCAECC; padding: 5px; border: 1px solid #000;" id="zrvdeviceip">ZRV压缩设备IP地址：</td>
+                                <td style="background: #BCAECC; padding: 5px; border: 1px solid #000;" id="zrvallnum">当前压缩任务总数：</td>
+                                <td style="text-align: center; padding: 5px; border: 1px solid #000; "><input type="button" id="hisTaskCountBtn" value="历史任务统计"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table style="width:100%;text-align:center;border:1px solid #000;" id="deviceMonitor_detailinfo" class=" table table-striped">
+                            <tr>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">记录编号</td>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">文件名称</td>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">上传时间</td>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">压缩任务创建时间</td>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">压缩设备IP地址</td>
+                                <td style="background: #EAEAEA; border: 1px solid #000; ">任务详情</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+                <div style="margin-top: 20px;display:none;" id="deviceHistoryMonitor_detail">
+                    <div>
+                        <table style="width: 100%;font-size:16px;font-weight:bold;">
+                            <tr>
+                                <td style="background: #BCAECC; padding: 5px; border: 1px solid #000;" id="his_zrvdeviceip">ZRV压缩设备IP地址：</td>
+                                <td style="background: #BCAECC; padding: 5px; border: 1px solid #000;" id="his_zrvallnum">压缩任务总数：<span></span></td>
+                                <td style="width:10%;"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <div style="border:1px solid #ccc;">
+                            <div style="padding: 10px;">
+                                <span>统计时段</span>
+                                <input id="input_uploadtimebegin" type="input" value="" /> 到
+                                <input id="input_uploadtimeend" type="input" value="" />
+                                <button class="btn" id="countbytime">统计</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <div style="border:1px solid #ccc;">
+                            <div id="Histogram" style="width:100%;height:400px;">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="taskassigndetaildialog" title="记录详情" style="display:none;">
+                <table id="data_table3" class="table"></table>
+            </div>
+        </div>
+    </div>
+    <script>
+        //定义分页及分页大小
+        var pagenow = 1;
+        var pagesize = 10;
+        var deviceip;
+        var int1;
+        var int2;
+        var myChart;
+        $(document).ready(function () {
+
+            $("#menu2").addClass("active");
+
+
+            $("#checkallBtn").click(function () {
+
+                $("#data_table :checkbox").prop("checked", true);
+
+            });
+
+            $("#reverseallBtn").click(function () {
+
+                $("#data_table :checkbox").each(function () {
+                    $(this).prop("checked", !$(this).prop("checked"));
+                });
+            });
+
+            $("#deleteBtn").click(function () {
+
+                var valArr = new Array;
+                $.each($('input:checkbox:checked'), function (i) {
+                    valArr[i] = $(this).val();
+
+                });
+                var vals = valArr.join(',');//转换为逗号隔开的字符串
+                if (valArr.length == 0) {
+                    alert("未选中数据");
+                    return;
+                }
+
+                if (!confirm("是否确定删除?")) {
+                    return
+                }
+
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "__ROOT__/index.php/Home/Device/delete?ids=" + vals,
+                    async: true,
+                    error: function (request) {
+                        $("#content").html("");
+                        alert("连接失败");
+                    },
+                    success: function (data) {
+                        if (data.status == 0) {
+                            alert("删除成功");
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+            $("#refreshBtn").click(function () {
+
+                window.location.reload();
+
+            });
+
+        });
+
+        function page1reload() {
+            window.location.reload();
+        }
+
+        function page2reload() {
+            setPage(1);
+            //console.log(pagenow);
+        }
+
+        int1 = setInterval("page1reload()", 10000);
+        function deviceMonitor_detail(devip, allnum) {
+            window.clearInterval(int1);
+            int2 = setInterval("page2reload()", 10000);
+            deviceip = devip;
+            $("#zrvdeviceip").append(deviceip);
+            $("#zrvallnum").append(allnum);
+            $("#deviceMonitor_main").hide();
+            $("#deviceMonitor_detail").show();
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Device/detail",
+                data: {
+                    pagenow: pagenow,
+                    pagesize: pagesize,
+                    ZRVDeviceIP: deviceip,
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data) {
+                    //console.log(data);
+                    $("#deviceMonitor_detailinfo").append(data);
+                },
+            })
+        }
+        function ChangeColor(obj) {
+            $(obj).css("border", "1px solid #FD6205");
+        }
+
+        function RestoreColor(obj) {
+            $(obj).css("border", "1px solid #ccc");
+        }
+
+        function setPage(pg) {
+            pagenow = pg;
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Device/detail",
+                data: {
+                    pagenow: pagenow,
+                    pagesize: pagesize,
+                    ZRVDeviceIP: deviceip,
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data) {
+                    var htmlstr = '<tr>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">记录编号</td>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">文件名称</td>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">上传时间</td>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">压缩任务创建时间</td>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">压缩设备IP地址</td>' +
+                            '<td style="background: #EAEAEA; border: 1px solid #000; ">任务详情</td></tr>';
+
+                    $("#deviceMonitor_detailinfo").html(htmlstr + data);
+                },
+            })
+        }
+
+        $("#hisTaskCountBtn").click(function () {
+            window.clearInterval(int2);
+            $("#deviceMonitor_detail").hide();
+            $("#deviceHistoryMonitor_detail").show();
+            $("#his_zrvdeviceip").append(deviceip);
+            //后台获取柱状图表数据并组装
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Device/getHisCompressTask",
+                data: {
+                    getHisCompressTaskByHour: true,
+                    zrvdeviceip: deviceip
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data1) {
+                    //console.log(data1);
+                    //console.log(data1[1].length);
+                    var allcount = 0;
+                    for (var m = 0; m < data1[1].length;m++){
+                        allcount += data1[1][m];
+                        //console.log(allcount);
+                    }
+                    $("#his_zrvallnum span").text(allcount);
+                    // 基于准备好的dom，初始化echarts图表
+                    myChart = echarts.init(document.getElementById('Histogram'), 'macarons');
+
+                    var option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            show: true
+                        },
+                        legend: {
+                            x: "right",
+                            y: "40%",
+                            data: ['任务数', ]
+                        },
+                        color: ['#5B9BD5'],
+                        xAxis: [
+                            {
+                                type: 'category',
+                                //data: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6']
+                                data: data1[0]
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                "name": "任务数",
+                                "type": "bar",
+                                //"data": [35, 20, 40, 30, 10, 20]
+                                "data": data1[1]
+                            }
+                        ]
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                },
+            })
+        });
+
+        $("#input_uploadtimebegin").datetimepicker();
+        $('#input_uploadtimeend').prop("readonly", true).datetimepicker({
+            timeText: '时间',
+            hourText: '小时',
+            minuteText: '分钟',
+            secondText: '秒',
+            currentText: '现在',
+            closeText: '完成',
+            showSecond: true, //显示秒
+            timeFormat: 'HH:mm:ss' //格式化时间
+        });
+
+        $("#input_uploadtimeend").datetimepicker();
+        $('#input_uploadtimeend').prop("readonly", true).datetimepicker({
+            timeText: '时间',
+            hourText: '小时',
+            minuteText: '分钟',
+            secondText: '秒',
+            currentText: '现在',
+            closeText: '完成',
+            showSecond: true, //显示秒
+            timeFormat: 'HH:mm:ss' //格式化时间
+        });
+
+        $("#countbytime").click(function () {
+            var timebegin = $("#input_uploadtimebegin").val();
+            var timeend = $("#input_uploadtimeend").val();
+            if (new Date(timebegin).getTime() > new Date(timeend).getTime()) {
+                alert("统计时段选择错误");
+            }
+            //后台获取柱状图表数据并组装
+            //console.log(timebegin + "||" + timeend);
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Device/getHisCompressTask",
+                data: {
+                    getHisCompressTaskByDay: true,
+                    timebegin: $("#input_uploadtimebegin").val(),
+                    timeend: $("#input_uploadtimeend").val(),
+                    zrvdeviceip: deviceip
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data1) {
+
+                    var allcount = 0;
+                    for (var m = 0; m < data1[1].length; m++) {
+                        allcount += data1[1][m];
+                    }
+                    $("#his_zrvallnum span").text(allcount);
+
+                    // 基于准备好的dom，初始化echarts图表
+                    myChart = echarts.init(document.getElementById('Histogram'), 'macarons');
+
+                    var option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            show: true
+                        },
+                        legend: {
+                            x: "right",
+                            y: "40%",
+                            data: ['任务数', ]
+                        },
+                        color: ['#5B9BD5'],
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: data1[0]
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                "name": "任务数",
+                                "type": "bar",
+                                "data": data1[1]
+                            }
+                        ]
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                },
+            })
+        });
+
+        function gettaskdetail(rcdnum) {
+            window.clearInterval(int2);
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Taskassign/GetTaskAssignDetail",
+                data: {
+                    recordnum: rcdnum,
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data) {
+                    //console.log(data);
+                    //$("#main_taskassign").hide();
+                    $("#taskassigndetaildialog").show();
+                    var taskdetailstr = "<tr><td>记录编号</td><td>" + data.recordnum + "</td></tr>" +
+                        "<tr><td>文件名称</td><td>" + data.filename + "</td></tr>" +
+                        "<tr><td>文件后缀名称</td><td>" + data.filesuffixname + "</td></tr>" +
+                        "<tr><td>源文件大小</td><td>" + data.filesize + "</td></tr>" +
+                        "<tr><td>压缩后文件大小</td><td>" + data.yshfilesize + "</td></tr>" +   
+                        "<tr><td>上传单位</td><td>" + data.uploadunit + "</td></tr>" +
+                        "<tr><td>上传时间</td><td>" + data.uploadtime + "</td></tr>" +
+                        "<tr><td>存储路径</td><td>" + data.storagepath + "</td></tr>" +
+                        "<tr><td>压缩后的存储路径</td><td>" + data.yshstoragepath + "</td></tr>" +
+                        "<tr><td bgcolor=\"#808080\"></td><td bgcolor=\"#808080\"></td></tr>"+
+                        "<tr><td>任务压缩的ZRV设备IP地址</td><td>" + data.zrvdeviceip + "</td></tr>" +
+                        "<tr><td>压缩任务创建时间</td><td>" + data.taskcreatetime + "</td></tr>" +
+                        "<tr><td>压缩任务开始时间</td><td>" + data.zrvcompressbegintime + "</td></tr>" +
+                        "<tr><td>压缩任务结束时间</td><td>" + data.zrvcompressendtime + "</td></tr>" +
+                        "<tr><td>任务状态</td><td>" + data.taskstatus + "</td></tr>" +
+                        "<tr><td>任务结果</td><td>" + data.taskresult + "</td></tr>" +
+                        "<tr><td>压缩任务失败原因</td><td>" + data.errorreason + "</td></tr>";
+                    $("#data_table3").html(taskdetailstr);
+                    $("#taskassigndetaildialog").dialog({
+                        height: "auto",        //高度
+                        width: "auto",        //宽度
+                        modal: true,
+                        close: function (event, ui) {
+                            int2 = setInterval("page2reload()", 10000);
+                        }
+                    });
+                },
+            })
+        }
+    </script>
+</body>
+</html>

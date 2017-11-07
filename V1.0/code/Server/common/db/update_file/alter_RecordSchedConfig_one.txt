@@ -1,0 +1,17 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordSchedConfig' AND column_name = 'AssignRecord') THEN  
+        ALTER TABLE RecordSchedConfig ADD AssignRecord INTEGER UNSIGNED DEFAULT 0; 
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordSchedConfig' AND column_name = 'TSUIndex') THEN  
+        ALTER TABLE RecordSchedConfig ADD TSUIndex INTEGER UNSIGNED DEFAULT 0;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

@@ -1,0 +1,16 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_RouteNetConfig_delete_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_RouteNetConfig_del`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_RouteNetConfig_del` BEFORE DELETE
+    ON RouteNetConfig
+    FOR EACH ROW BEGIN
+        DELETE FROM RouteDevicePermConfig  WHERE RouteIndex = old.ID;
+    END$$
+
+DELIMITER ;

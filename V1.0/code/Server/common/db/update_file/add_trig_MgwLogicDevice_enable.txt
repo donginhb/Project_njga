@@ -1,0 +1,16 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_MgwLogicDevice_enable`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `trig_MgwLogicDevice_enable` AFTER UPDATE ON `MgwLogicDeviceConfig` 
+    FOR EACH ROW BEGIN
+        IF new.Enable = 0 THEN
+        UPDATE `GBLogicDeviceConfig` SET Enable = 0 WHERE DeviceID = new.LogicDeviceID;
+        END IF;
+    END$$
+
+DELIMITER ;

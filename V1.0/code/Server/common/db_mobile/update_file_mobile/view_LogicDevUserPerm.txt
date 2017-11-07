@@ -1,0 +1,3 @@
+use EV9000DB_MOBILE;
+CREATE VIEW `View_LogicDevUserPerm` AS SELECT B.UserIndex,A.DeviceIndex FROM `UserGroupDevicePermConfig` A ,`UserMapGroupConfig` B WHERE A.GroupID = B.GroupID UNION  SELECT UserIndex ,DeviceIndex FROM `UserDevicePermConfig`;
+CREATE VIEW `View_LogicDevUserPermEx` AS SELECT DISTINCT * FROM View_LogicDevUserPerm;

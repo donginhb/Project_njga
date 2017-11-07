@@ -1,0 +1,13 @@
+USE EV9000TSU;
+
+DROP PROCEDURE IF EXISTS schema_change;  
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN 
+
+   IF NOT EXISTS (SELECT * FROM information_schema.statistics WHERE table_schema = 'EV9000TSU' AND table_name = 'FileRecord' AND index_name = 'index_DevcieIndex') THEN  
+      ALTER TABLE `FileRecord` ADD INDEX index_DevcieIndex (`DeviceIndex`);
+   END IF;  
+   
+END$$
+DELIMITER ;  
+CALL schema_change(); 

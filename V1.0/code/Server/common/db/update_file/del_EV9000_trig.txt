@@ -1,0 +1,42 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_CruiseCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_CruiseCon_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_del_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_enable`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_update`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`add_trig_GBLogicDev_update`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev_enable`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_LogicDeviceGroup_del_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_LogicDeviceGroup_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_MgwLogicDevice_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_MgwLogicDevice_enable`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PlanCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PlanCon_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PollCon`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PollCon_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_PresetConfig_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_RouteNetConfig_delete_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_RouteNetConfig_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_del`;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_UserCon_enable`;

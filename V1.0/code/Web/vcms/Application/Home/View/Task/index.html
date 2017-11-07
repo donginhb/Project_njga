@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+
+<include file="public/head"/>
+
+<title>综合查询</title>
+
+<body>
+
+<style>
+    #data_table{
+        font-size: 12px;
+    }
+    #data_table2 {
+        font-size: 12px;
+    }
+    #data_table3 {
+        font-size: 12px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <include file="public/top"/>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2" style="background-color: #2d70ba;height:100%;">
+            <include file="public/left"/>
+        </div>
+        <div class="col-md-10" id="comquery">
+            <div style="margin-top: 10px;">
+                <!--
+                <div style="border:1px solid #ccc;padding:5px 0px;">
+                 <td><h4>上次获取压缩任务的时间:{$info2.lasttasktime} 压缩任务状态:{$info2.compresstaskstatus} 错误原因:{$info2.errorreason}</h4></td>
+                </div>
+                -->
+                <h4>查询条件</h4>
+                <div style="border:1px solid #ccc;padding:5px 0px;">
+                    <div style="padding: 5px;">
+                        <span>视频文件上传时间:</span>
+                        <input id="input_uploadtimebegin" type="input" value="{$begintime_str}" /> 到
+                        <input id="input_uploadtimeend" type="input" value="{$endtime_str}" />
+                        <button class="btn" id="cleartimeBtn">清空时间</button>
+                        <span style="margin-left: 20px;">压缩任务创建时间:</span>
+                        <input id="input_createtimebegin" type="input" value="{$createbegintime}" /> 到
+                        <input id="input_createtimeend" type="input" value="{$createendtime}" />
+                        <button class="btn" id="clearcreatetimeBtn">清空时间</button>
+                    </div>
+                    <div style="padding: 5px;">
+                        <span>压缩任务开始时间:</span>
+                        <input id="input_zrvbegin_timebegin" type="input" value="{$zrvbegin_begintime_str}" /> 到
+                        <input id="input_zrvbegin_timeend" type="input" value="{$zrvbegin_endtime_str}" />
+                        <button class="btn" id="clearzrvbegintimeBtn">清空时间</button>
+                        <span style="margin-left: 20px;">压缩任务结束时间:</span>
+                        <input id="input_zrvend_timebegin" type="input" value="{$zrvend_begintime_str}" /> 到
+                        <input id="input_zrvend_timeend" type="input" value="{$zrvend_endtime_str}" />
+                        <button class="btn" id="clearzrvendtimeBtn">清空时间</button>
+                    </div>
+                    <div style="padding: 5px;">
+                        <span>压缩设备IP地址:</span>
+                        <input id="input_deviceip" value="{$deviceip}" />
+                        <span style="margin-left: 20px;">任务结果:</span>
+                        <select id="select_taskresult">
+                            <option value="-1">不限</option>
+                            <option value="1">成功</option>
+                            <option value="2">失败</option>
+                        </select>
+                        <span style="margin-left: 20px;">错误原因:</span>
+                        <select id="select_errorreason">
+                            <option value="-1">不限</option>
+                            <option value="1001">01.云创平台登录失败</option>
+                            <option value="1002">02.获取源视频文目录失败</option>
+                            <option value="1003">03.获取源视频文件失败</option>
+                            <option value="1004">04.获取源视频文件大小失败</option>
+                            <option value="1007">05.源视频文件格式不支持</option>
+                            <option value="1008">06.分析源视频文件内容失败</option>
+                            <option value="1006">07.压缩源视频文件失败</option>
+                            <option value="1005">08.压缩后文件写入到新目录失败</option>
+                            <option value="1009">09.删除临时文件失败</option>
+                            <option value="2000">10.压缩任务结果未返回</option>
+                        </select>
+                        <a href=__ROOT__/index.php/Home/Task/error_note.html target="_blank">错误码详细说明</a>
+                    </div>
+                    <button style="margin-left: 10px;width: 100px;" id="queryBtn" class="btn btn-success">查询</button>
+                    <button style="margin-left: 10px;width: 100px;" id="exportBtn" class="btn">导出到Excel</button>
+                </div>
+                <br>
+                <h4>查询结果</h4>
+                <div style="border:1px solid #ccc;padding:5px 0px;">
+                <table>
+                    <tr>
+                        <td style="padding:0 5px;">查询的任务总数：<font color="blue">{$querycount}</font></td>
+                        <td style="padding:0 5px;"><div style="margin-left:10px;">成功的任务总数：<font color="green">{$allres.successnum}</font></div></td>
+                        <td style="padding:0 5px;"><div style="margin-left:10px;">失败的任务总数：<font color="red">{$allres.failnum}</font>，失败任务详细统计：</div></td>
+                        <td style="padding:0 5px;">01.云创平台登录失败(0x01001)任务数：<font color="red">{$allres.error1num}</td>
+                        <td style="padding:0 5px;">06.分析源视频文件内容失败(0x01008)任务数：<font color="red">{$allres.error8num}</font></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;">02.获取源视频文目录失败(0x01002)任务数：<font color="red">{$allres.error2num}</font></td>
+                        <td style="padding:0 5px;">07.压缩源视频文件失败(0x01006)任务数：<font color="red">{$allres.error6num}</div></td>
+                    </tr>   
+                    <tr>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;">03.获取源视频文件失败(0x01003)任务数：<font color="red">{$allres.error3num}</font></td>
+                        <td style="padding:0 5px;">08.压缩后文件写入到新目录失败(0x01005)任务数：<font color="red">{$allres.error5num}</font></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;">04.获取源视频文件大小失败(0x01004)任务数：<font color="red">{$allres.error4num}</font></td>
+                        <td style="padding:0 5px;">09.删除临时文件失败(0x01009)任务数：<font color="red">{$allres.error9num}</font></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;">05.源视频文件格式不支持(0x01007)任务数：<font color="red">{$allres.error7num}</font></td>
+                        <td style="padding:0 5px;">10.压缩任务结果未返回(0x02000)任务数：<font color="red">{$allres.error10num}</font></td>
+                    </tr>
+                </table>
+                <table id="data_table" style="width:100%;text-align:center;"  class="table table-striped">
+                    <tr>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">记录编号</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">文件名称</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">视频文件上传时间</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">压缩任务创建时间</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">压缩任务开始时间</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">压缩设备IP地址</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">任务结果</td>
+                        <td style="background: #EAEAEA; border: 1px solid #000; ">任务详情</td>
+                    </tr>
+                    <volist name="list" id="vo">
+                        <tr>
+                            <td>{$vo.recordnum} </td>
+                            <td>{$vo.filename} </td>
+                            <td>{$vo.uploadtime} </td>
+                            <td>{$vo.taskcreatetime}</td>
+                            <td>{$vo.zrvcompressbegintime}</td>
+                            <td>{$vo.zrvdeviceip} </td>
+                            <td>{$vo.taskresult} </td>
+                            <td><a href="javascript:void(0);" onclick="gettaskdetail('{$vo.recordnum}');">详情</a> </td>
+                        </tr>
+                    </volist>
+                </table>
+                <div class="page">
+                    {$page}
+                </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="col-md-10" id="comquerydetail" style="display:none">
+            <div style="margin-top: 20px;">
+                <h3>记录详情</h3>
+                <table id="data_table3" class="table">
+                    
+                </table>
+            </div>
+        </div>-->
+     </div>
+
+    <div id="comquerydetail" title="记录详情" style="display:none;">
+            <table id="data_table3" class="table"></table>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function(){
+
+            var querycount = {$querycount};
+
+            function getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return null;
+            }
+            function formatDateTime(inputTime) {
+                var date = new Date(inputTime);
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                var minute = date.getMinutes();
+                var second = date.getSeconds();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                second = second < 10 ? ('0' + second) : second;
+                return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+            };
+
+            function f_check_IP(ip)
+            {
+                var re=/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;//正则表达式
+                if(re.test(ip))
+                {
+                    if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256)
+                        return true;
+                }
+                return false;
+            }
+
+            $("#select_taskresult").val({$taskresult});
+            $("#select_errorreason").val({$errorcode});
+
+            $("#menu1").addClass("active");
+
+            $("#cleartimeBtn").click(function(){
+
+                $("#input_uploadtimebegin").val("");
+                $("#input_uploadtimeend").val("");
+            });
+            
+            $("#clearcreatetimeBtn").click(function(){
+
+                $("#input_createtimebegin").val("");
+                $("#input_createtimeend").val("");
+            });
+            
+            $("#clearzrvbegintimeBtn").click(function(){
+
+                $("#input_zrvbegin_timebegin").val("");
+                $("#input_zrvbegin_timeend").val("");
+            }); 
+            
+            $("#clearzrvendtimeBtn").click(function(){
+
+                $("#input_zrvend_timebegin").val("");
+                $("#input_zrvend_timeend").val("");
+            }); 
+
+            $("#queryBtn").click(function(){
+                var beginTime = Date.parse(new Date($("#input_uploadtimebegin").val().trim()));
+                beginTime = beginTime/1000;
+                var endTime = Date.parse(new Date($("#input_uploadtimeend").val().trim()));
+                endTime = endTime/1000;
+                
+                var zrvbegin_begintime = Date.parse(new Date($("#input_zrvbegin_timebegin").val().trim()));
+                zrvbegin_begintime = zrvbegin_begintime/1000;
+                var zrvbegin_endtime = Date.parse(new Date($("#input_zrvbegin_timeend").val().trim()));
+                zrvbegin_endtime = zrvbegin_endtime/1000;     
+                
+                var zrvend_begintime = Date.parse(new Date($("#input_zrvend_timebegin").val().trim()));
+                zrvend_begintime = zrvend_begintime/1000;
+                var zrvend_endtime = Date.parse(new Date($("#input_zrvend_timeend").val().trim()));
+                zrvend_endtime = zrvend_endtime/1000;                            
+
+                var taskresult = $("#select_taskresult").val();
+                var deviceip = $("#input_deviceip").val();
+                var errorcode = $("#select_errorreason").val();
+
+                var createbegintime = $("#input_createtimebegin").val();
+                var createendtime = $("#input_createtimeend").val();
+
+                if (beginTime != "NaN" && endTime !="NaN"){
+                    if (beginTime>=endTime){
+                        alert("视频文件上传的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+
+                if (zrvbegin_begintime != "NaN" && zrvbegin_endtime !="NaN"){
+                    if (zrvbegin_begintime>=zrvbegin_endtime){
+                        alert("压缩任务开始的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+                
+                if (zrvend_begintime != "NaN" && zrvend_endtime !="NaN"){
+                    if (zrvend_begintime>=zrvend_endtime){
+                        alert("压缩任务结束的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+                
+                if (deviceip.length>0 && !f_check_IP(deviceip.trim())){
+                    alert("ip 地址不合法");
+                    return;
+                }
+
+                var query = "begintime="+beginTime+"&endtime="+endTime+
+                                "&taskresult="+taskresult+"&deviceip="+deviceip+"&errorcode="+
+                                 errorcode+"&createbegintime="+createbegintime+"&createendtime="+createendtime+
+                                "&zrvbegin_begintime="+zrvbegin_begintime+"&zrvbegin_endtime="+zrvbegin_endtime+
+                                "&zrvend_begintime="+zrvend_begintime+"&zrvend_endtime="+zrvend_endtime;
+
+                var url = "__ROOT__/index.php/Home/Task?"+query;
+                window.location.href=url;
+
+            });
+
+            $("#exportBtn").click(function(){
+
+                if (querycount>1000){
+                    alert("导出数据"+querycount+"太多,最多1000条");
+                    return;
+                }
+
+                var beginTime = Date.parse(new Date($("#input_uploadtimebegin").val().trim()));
+                beginTime = beginTime/1000;
+                var endTime = Date.parse(new Date($("#input_uploadtimeend").val().trim()));
+                endTime = endTime/1000;
+                
+                var zrvbegin_begintime = Date.parse(new Date($("#input_zrvbegin_timebegin").val().trim()));
+                zrvbegin_begintime = zrvbegin_begintime/1000;
+                var zrvbegin_endtime = Date.parse(new Date($("#input_zrvbegin_timeend").val().trim()));
+                zrvbegin_endtime = zrvbegin_endtime/1000;     
+                
+                var zrvend_begintime = Date.parse(new Date($("#input_zrvend_timebegin").val().trim()));
+                zrvend_begintime = zrvend_begintime/1000;
+                var zrvend_endtime = Date.parse(new Date($("#input_zrvend_timeend").val().trim()));
+                zrvend_endtime = zrvend_endtime/1000;          
+
+                var taskresult = $("#select_taskresult").val();
+                var deviceip = $("#input_deviceip").val();
+                var errorcode = $("#select_errorreason").val();
+
+                var createbegintime = $("#input_createtimebegin").val();
+                var createendtime = $("#input_createtimeend").val();
+
+                if (beginTime != "NaN" && endTime !="NaN"){
+                    if (beginTime>=endTime){
+                        alert("视频文件上传的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+
+                if (zrvbegin_begintime != "NaN" && zrvbegin_endtime !="NaN"){
+                    if (zrvbegin_begintime>=zrvbegin_endtime){
+                        alert("压缩任务开始的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+                
+                if (zrvend_begintime != "NaN" && zrvend_endtime !="NaN"){
+                    if (zrvend_begintime>=zrvend_endtime){
+                        alert("压缩任务结束的开始时间不能晚于结束时间");
+                        return;
+                    }
+                }
+                
+                if (deviceip.length>0 && !f_check_IP(deviceip.trim())){
+                    alert("ip 地址不合法");
+                    return;
+                }
+
+                var query = "begintime="+beginTime+"&endtime="+endTime+
+                        "&taskresult="+taskresult+"&deviceip="+deviceip+"&errorcode="+
+                        errorcode+"&createbegintime="+createbegintime+"&createendtime="+createendtime+
+                        "&zrvbegin_begintime="+zrvbegin_begintime+"&zrvbegin_endtime="+zrvbegin_endtime+
+                        "&zrvend_begintime="+zrvend_begintime+"&zrvend_endtime="+zrvend_endtime;
+
+                var url = "__ROOT__/index.php/Home/Task/export2excel?"+query;
+                window.open(url);
+
+            });
+
+            $.datepicker.regional['zh-CN'] = {
+                changeMonth: true,
+                changeYear: true,
+                clearText: '清除',
+                clearStatus: '清除已选日期',
+                closeText: '关闭',
+                closeStatus: '不改变当前选择',
+                prevText: '<上月',
+                prevStatus: '显示上月',
+                prevBigText: '<<',
+                prevBigStatus: '显示上一年',
+                nextText: '下月>',
+                nextStatus: '显示下月',
+                nextBigText: '>>',
+                nextBigStatus: '显示下一年',
+                currentText: '今天',
+                currentStatus: '显示本月',
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthNamesShort: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                monthStatus: '选择月份',
+                yearStatus: '选择年份',
+                weekHeader: '周',
+                weekStatus: '年内周次',
+                dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
+                dayStatus: '设置 DD 为一周起始',
+                dateStatus: '选择 m月 d日, DD',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                initStatus: '请选择日期',
+                isRTL: false
+            };
+
+            $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+
+            $("#input_uploadtimebegin").datetimepicker();
+            $('#input_uploadtimebegin').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_uploadtimeend").datetimepicker();
+            $('#input_uploadtimeend').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_createtimebegin").datetimepicker();
+            $('#input_createtimebegin').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_createtimeend").datetimepicker();
+            $('#input_createtimeend').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+            
+            $("#input_zrvbegin_timebegin").datetimepicker();
+            $('#input_zrvbegin_timebegin').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_zrvbegin_timeend").datetimepicker();
+            $('#input_zrvbegin_timeend').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_zrvend_timebegin").datetimepicker();
+            $('#input_zrvend_timebegin').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+
+            $("#input_zrvend_timeend").datetimepicker();
+            $('#input_zrvend_timeend').prop("readonly", true).datetimepicker({
+                timeText: '时间',
+                hourText: '小时',
+                minuteText: '分钟',
+                secondText: '秒',
+                currentText: '现在',
+                closeText: '完成',
+                showSecond: true, //显示秒
+                timeFormat: 'HH:mm:ss' //格式化时间
+            });
+        });
+
+        function gettaskdetail(rcdnum){
+            $.ajax({
+                type: "POST",
+                url: "__ROOT__/index.php/Home/Task/GetCompressTaskQuery",
+                data: {
+                    recordnum:rcdnum,
+                },
+                error: function (data) {
+                    alert("fail");
+                },
+                success: function (data) {
+                    var taskdetailstr="<tr><td>记录编号</td><td>"+data.recordnum+"</td></tr>"+
+                        "<tr><td>文件名称</td><td>"+data.filename+"</td></tr>"+
+                        "<tr><td>文件后缀名称</td><td>"+data.filesuffixname+"</td></tr>"+
+                        "<tr><td>源文件大小</td><td>"+data.filesize+"</td></tr>"+
+                        "<tr><td>压缩后文件大小</td><td>"+data.yshfilesize+"</td></tr>"+                        
+                        "<tr><td>上传单位</td><td>"+data.uploadunit+"</td></tr>"+
+                        "<tr><td>视频文件上传时间</td><td>"+data.uploadtime+"</td></tr>"+
+                        "<tr><td>存储路径</td><td>"+data.storagepath+"</td></tr>"+
+                        "<tr><td>压缩后的存储路径</td><td>"+data.yshstoragepath+"</td></tr>"+
+                        "<tr><td bgcolor=\"#808080\"></td><td bgcolor=\"#808080\"></td></tr>"+
+                        "<tr><td>任务压缩的ZRV设备IP地址</td><td>"+data.zrvdeviceip+"</td></tr>"+
+                        "<tr><td>压缩任务创建时间</td><td>"+data.taskcreatetime+"</td></tr>"+
+                        "<tr><td>压缩任务开始时间</td><td>"+data.zrvcompressbegintime+"</td></tr>"+
+                        "<tr><td>压缩任务结束时间</td><td>"+data.zrvcompressendtime+"</td></tr>"+                       
+                        "<tr><td>任务状态</td><td>"+data.taskstatus+"</td></tr>"+
+                        "<tr><td>任务结果</td><td>"+data.taskresult+"</td></tr>"+
+                        "<tr><td>压缩任务失败原因</td><td>"+data.errorreason+"</td></tr>";
+                    $("#data_table3").html(taskdetailstr);
+
+                    $( "#comquerydetail" ).dialog({
+                        height : "auto",        //高度
+                        width : "auto",        //宽度
+                        modal : true,
+                    });
+
+                    
+                },
+            })
+        }
+</script>
+
+</body>
+</html>

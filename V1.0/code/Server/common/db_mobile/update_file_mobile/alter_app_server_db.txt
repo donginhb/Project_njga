@@ -1,0 +1,39 @@
+use app_server_db;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'pointconfig' AND column_name = 'group_id') THEN  
+        ALTER TABLE pointconfig ADD group_id VARCHAR(36) DEFAULT NULL;  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'userconfig' AND column_name = 'login_ip') THEN  
+        ALTER TABLE userconfig ADD login_ip VARCHAR(20) DEFAULT NULL;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'pointconfig' AND column_name = 'frame_rate') THEN  
+        ALTER TABLE pointconfig ADD frame_rate int(10) DEFAULT '0';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'group_config' AND column_name = 'group_type') THEN  
+        ALTER TABLE group_config ADD group_type int(10) unsigned NOT NULL DEFAULT '0';
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'userconfig' AND column_name = 'group_id') THEN  
+        ALTER TABLE userconfig ADD group_id varchar(36) NOT NULL DEFAULT '0';
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'user_point_config' AND column_name = 'point_type') THEN  
+        ALTER TABLE user_point_config ADD point_type int(10) NOT NULL DEFAULT '0';
+END IF;
+
+ALTER TABLE group_config change group_id group_id VARCHAR(36) DEFAULT NULL;
+ALTER TABLE group_config change parent_id parent_id VARCHAR(36) DEFAULT NULL;
+ALTER TABLE pointconfig change group_id group_id VARCHAR(36) DEFAULT NULL;
+ALTER TABLE user_point_config change point_id point_id VARCHAR(36) DEFAULT NULL;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();
+

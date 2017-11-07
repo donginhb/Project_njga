@@ -1,0 +1,21 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'PlanLinkageConfig' AND column_name = 'TYPE') THEN  
+        ALTER TABLE PlanLinkageConfig ADD TYPE INTEGER UNSIGNED DEFAULT 0;  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'PlanLinkageConfig' AND column_name = 'LEVEL') THEN  
+        ALTER TABLE PlanLinkageConfig ADD LEVEL INTEGER UNSIGNED DEFAULT 0;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'PlanLinkageConfig' AND column_name = 'RepeatEnable') THEN  
+        ALTER TABLE PlanLinkageConfig ADD RepeatEnable INTEGER UNSIGNED DEFAULT 1;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

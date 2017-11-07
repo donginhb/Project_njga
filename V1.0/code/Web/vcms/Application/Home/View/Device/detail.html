@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<include file="public/head"/>
+
+<title>设备监测 详情</title>
+
+<body>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <include file="public/top"/>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-2" style="background-color: #2d70ba">
+            <include file="public/left"/>
+        </div>
+        <div class="col-md-10">
+
+            <div style="margin-top: 20px;">
+
+                <h3>记录详情</h3>
+
+                <table id="data_table" class="table">
+
+                    <tr>
+                        <td>记录编号</td>
+                        <td>{$info.recordnum}</td>
+                    </tr>
+                    <tr>
+                        <td>文件名称</td>
+                        <td>{$info.filename}</td>
+                    </tr>
+
+                    <tr>
+                        <td>文件后缀名称</td>
+                        <td>{$info.filesuffixname}</td>
+                    </tr>
+
+                    <tr>
+                        <td>源文件大小</td>
+                        <td>{$info.filesize}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>上传单位</td>
+                        <td>{$info.uploadunit}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>上传时间</td>
+                        <td>{$info.uploadtime}</td>
+                    </tr>
+
+                    <tr>
+                        <td>存储路径</td>
+                        <td>{$info.storagepath}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩后文件大小</td>
+                        <td>{$info.yshfilesize}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩后的存储路径</td>
+                        <td>{$info.yshstoragepath}</td>
+                    </tr>
+
+                    <tr>
+                        <td>任务分配标示</td>
+                        <td>{$info.assignflag}</td>
+                    </tr>
+
+                    <tr>
+                        <td>任务来源平台ip地址</td>
+                        <td>{$info.platformip}</td>
+                    </tr>
+
+                    <tr>
+                        <td>任务压缩的ZRV设备IP地址</td>
+                        <td>{$info.zrvdeviceip}</td>
+                    </tr>
+
+                    <tr>
+                        <td>任务状态</td>
+                        <td>{$info.taskstatus}</td>
+                    </tr>
+
+                    <tr>
+                        <td>任务结果</td>
+                        <td>{$info.taskresult}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩任务创建时间</td>
+                        <td>{$info.taskcreatetime}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩任务开始时间</td>
+                        <td>{$info.zrvcompressbegintime}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩任务结束时间</td>
+                        <td>{$info.zrvcompressendtime}</td>
+                    </tr>
+
+                    <tr>
+                        <td>压缩任务失败原因</td>
+                        <td>{$info.errorreason}</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+        $(document).ready(function(){
+
+            $("#menu3").addClass("active");
+
+        });
+</script>
+
+</body>
+</html>

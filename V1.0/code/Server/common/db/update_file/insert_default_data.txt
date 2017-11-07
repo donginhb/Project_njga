@@ -1,0 +1,162 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM IVASChanelSource WHERE CID = 0) THEN  
+    INSERT INTO `IVASChanelSource`(`CID`,`Enable`,`CType`,`CMark`,`CRtspUrl`,`CName`,`ImagePath`,`CResolutionX`,`CResolutionY`) SELECT 0,0,1,'32011501001320100001','','testvideo1','Test.jpg',352,288;
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASChanelSource WHERE CID = 1) THEN  
+    INSERT INTO `IVASChanelSource`(`CID`,`Enable`,`CType`,`CMark`,`CRtspUrl`,`CName`,`ImagePath`,`CResolutionX`,`CResolutionY`) SELECT 1,0,1,'32011501001320100002','','testvideo2','Test1.jpg',352,288;
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 1) THEN  
+    INSERT INTO `IVASOptions` SELECT 1,"设备类型","601~视频质量诊断,602~行为分析","601";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 2) THEN  
+    INSERT INTO `IVASOptions` SELECT 2,"是否启用国标28181","是否启用国标28181","1";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 100) THEN  
+    INSERT INTO `IVASOptions` SELECT 100,"SIP服务器编号","SIP服务器编号","32011501002000100000";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 101) THEN  
+    INSERT INTO `IVASOptions` SELECT 101,"SIP域","SIP域","3201150100";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 102) THEN  
+    INSERT INTO `IVASOptions` SELECT 102,"SIP服务器IP","SIP服务器IP","192.168.0.12";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 103) THEN  
+    INSERT INTO `IVASOptions` SELECT 103,"SIP服务器端口","SIP服务器端口","5060";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 104) THEN  
+    INSERT INTO `IVASOptions` SELECT 104,"设备编号","设备编号","32011501006010100000";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 105) THEN  
+    INSERT INTO `IVASOptions` SELECT 105,"注册密码","注册密码","12345678";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 106) THEN  
+    INSERT INTO `IVASOptions` SELECT 106,"本地SIP服务器端口","本地SIP服务器端口","5060";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 107) THEN  
+    INSERT INTO `IVASOptions` SELECT 107,"注册有效期","注册有效期(单位：小时)","24";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 108) THEN  
+    INSERT INTO `IVASOptions` SELECT 108,"心跳周期","心跳周期","60";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 109) THEN  
+    INSERT INTO `IVASOptions` SELECT 109,"最大心跳超时次数","最大心跳超时次数","3";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 110) THEN  
+    INSERT INTO `IVASOptions` SELECT 110,"设备IP地址","设备IP地址","192.168.0.50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 111) THEN  
+    INSERT INTO `IVASOptions` SELECT 111,"EV9000用户名","EV9000用户名","Honeywell";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 112) THEN  
+    INSERT INTO `IVASOptions` SELECT 112,"EV9000用户密码","EV9000用户密码","Honeywell";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 200) THEN  
+    INSERT INTO `IVASOptions` SELECT 200,"诊断视频来源","1~视频源表；2~动态ev9000返回","1";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 201) THEN  
+    INSERT INTO `IVASOptions` SELECT 201,"告警阈值","视频丢失告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 202) THEN  
+    INSERT INTO `IVASOptions` SELECT 202,"告警阈值","镜头遮挡告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 203) THEN  
+    INSERT INTO `IVASOptions` SELECT 203,"告警阈值","画面冻结告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 204) THEN  
+    INSERT INTO `IVASOptions` SELECT 204,"告警阈值","亮度异常告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 205) THEN  
+    INSERT INTO `IVASOptions` SELECT 205,"告警阈值","镜头抖动告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 206) THEN  
+    INSERT INTO `IVASOptions` SELECT 206,"告警阈值","雪花噪声告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 206) THEN  
+    INSERT INTO `IVASOptions` SELECT 207,"告警阈值","镜头模糊告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 208) THEN  
+    INSERT INTO `IVASOptions` SELECT 208,"告警阈值","画面偏色告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 209) THEN  
+    INSERT INTO `IVASOptions` SELECT 209,"告警阈值","黑白图像告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 210) THEN  
+    INSERT INTO `IVASOptions` SELECT 210,"告警阈值","图像过暗告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 211) THEN  
+    INSERT INTO `IVASOptions` SELECT 211,"告警阈值","低对比度告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 212) THEN  
+    INSERT INTO `IVASOptions` SELECT 212,"告警阈值","视频剧变告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 213) THEN  
+    INSERT INTO `IVASOptions` SELECT 213,"告警阈值","马赛克告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 214) THEN  
+    INSERT INTO `IVASOptions` SELECT 214,"告警阈值","条纹干扰告警阈值","50";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 300) THEN  
+    INSERT INTO `IVASOptions` SELECT 300,"分析视频流输出方式","1~直接叠加到视频；2~返回原始流，打入智能头","1";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 301) THEN  
+    INSERT INTO `IVASOptions` SELECT 301,"分析板行为分析的最大资源数","用像素表示","811008";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IVASOptions WHERE OptionID = 302) THEN  
+    INSERT INTO `IVASOptions` SELECT 302,"最短报警间隔时间","单个通道两次报警的最小间隔时间单位：秒","30";
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IvsOperator WHERE OptAccount = 'Honeywell') THEN  
+    INSERT INTO `IvsOperator` SELECT 'Honeywell','Honeywell','默认管理员',3;
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IvsOperator WHERE OptAccount = 'admin') THEN  
+    INSERT INTO `IvsOperator` SELECT 'admin','12345','默认操作员',3;
+END IF; 
+
+IF NOT EXISTS (SELECT * FROM IvsOperator WHERE OptAccount = 'guest') THEN  
+    INSERT INTO `IvsOperator` SELECT 'guest','guest','默认访客',1;
+END IF; 
+
+END$$  
+DELIMITER ;  
+CALL schema_change();
+DROP PROCEDURE IF EXISTS schema_change; 

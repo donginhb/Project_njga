@@ -1,0 +1,53 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoNightMode') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoNightMode` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '黑白图像'; 
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoLumLow') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoLumLow` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '图像过暗';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoContrastLow') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoContrastLow` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '低对比度';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoUpheaval') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoUpheaval` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '视频剧变';  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoMosaic') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoMosaic` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '马赛克'; 
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoStripe') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoStripe` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '条纹干扰'; 
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoPTZ') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoPTZ` 		SMALLINT NOT NULL DEFAULT 100 COMMENT 'PTZ异常';  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoSceneChange') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoSceneChange` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '场景变更';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoNetWork') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoNetWork` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '网络异常';  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoLogIn') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoLogIn` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '登录失败';  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'IVASRealDiagnosis' AND column_name = 'VideoNoStream') THEN  
+        ALTER TABLE `IVASRealDiagnosis` ADD `VideoNoStream` 	SMALLINT NOT NULL DEFAULT 100 COMMENT '取流失败';  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

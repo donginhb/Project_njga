@@ -1,0 +1,4 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_enable`;

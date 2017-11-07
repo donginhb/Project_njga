@@ -1,0 +1,4 @@
+use EV9000DB;
+
+ALTER TABLE ServerConfigTable MODIFY UserName VARCHAR(32); 
+ALTER TABLE ServerConfigTable MODIFY UserPsw VARCHAR(32); 

@@ -1,0 +1,62 @@
+#!/bin/sh
+
+sysctl -w net.ipv4.tcp_keepalive_time=30
+
+sysctl -w net.ipv4.tcp_keepalive_probes=2
+
+sysctl -w net.ipv4.tcp_keepalive_intvl=2
+
+sleep 3
+
+pcount=0
+
+echo check mysqld is start
+while :
+do
+
+mysql -uroot -pzbitcloud -e "select version();" &>/dev/null
+
+if [ ! $? -ne 0 ]
+then
+echo mysqld has start OK
+sleep 20
+break
+else
+pcount=$(( $pcount + 1 ))
+if [ $pcount -eq 10 ] 
+then
+pcount=0
+echo waitting mysqld start OK
+fi
+fi
+
+sleep 1
+done
+
+echo Start application
+
+echo Delete Old Log File
+find /data/log -mtime +3 -type f -name 'cms_*.*' | xargs rm -rf
+
+echo Delete Mobile Old Log File
+find /data/log -mtime +3 -type f -name 'mms_*.*' | xargs rm -rf
+
+cd /app
+
+echo Start app_monitor
+/app/app_monitor.sh > /dev/null &
+
+sleep 10
+
+echo Start Mobile app_monitor
+/app/app_monitor_mobile.sh > /dev/null &
+
+sleep 10
+
+echo Start RTSP Server
+/app/start_rtsp.sh > /dev/null &
+
+echo Start IVS monitor
+/app/ivs_app_monitor.sh > /dev/null &
+
+echo Start suss

@@ -1,0 +1,37 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'OtherRealm') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD OtherRealm INTEGER UNSIGNED DEFAULT 0; 
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'MicEnable') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD MicEnable INTEGER UNSIGNED DEFAULT 0;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'FrameCount') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD FrameCount INTEGER UNSIGNED DEFAULT 25;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'Param') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD Param VARCHAR(132) DEFAULT 0;  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'IAEnable') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD IAEnable INTEGER UNSIGNED DEFAULT 0; 
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'RecordByTimeEnable') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD RecordByTimeEnable INTEGER UNSIGNED DEFAULT 1;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'GBLogicDeviceConfig' AND column_name = 'AlarmLengthOfTime') THEN  
+        ALTER TABLE GBLogicDeviceConfig ADD AlarmLengthOfTime INTEGER UNSIGNED DEFAULT 0;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

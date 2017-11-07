@@ -1,0 +1,17 @@
+use EV9000LOG_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'UserLogRecord' AND column_name = 'Info') THEN  
+        ALTER TABLE UserLogRecord MODIFY Info VARCHAR(512);  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'UserLogRecord' AND column_name = 'LogIP') THEN  
+        ALTER TABLE UserLogRecord ADD LogIP varchar(20) DEFAULT NULL; 
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

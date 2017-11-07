@@ -1,0 +1,18 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBPhyDev_enable`;
+
+DELIMITER $$
+
+CREATE /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_GBPhyDev_enable` AFTER UPDATE
+    ON GBPhyDeviceConfig
+    FOR EACH ROW BEGIN 
+        IF new.Enable = 0 THEN
+        UPDATE `GBLogicDeviceConfig` SET Enable = 0 WHERE PhyDeviceIndex = new.ID;
+        DELETE FROM GBPhyDevicePermConfig  WHERE GBPhyDeviceIndex = new.ID;
+        DELETE FROM TopologyPhyDeviceConfig WHERE DeviceID = new.DeviceID; 
+        END IF; 
+    END$$
+
+DELIMITER ;

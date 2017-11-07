@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<include file="public/head"/>
+<title>综合查询</title>
+<body>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <include file="public/top"/>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-2" style="background-color: #2d70ba">
+            <include file="public/left"/>
+        </div>
+        <div class="col-md-10">
+
+            <div style="margin-top: 30px;">
+
+                <table class="table table-bordered" style="width:500px;">
+                    <tr>
+                        <td>平台地址</td>
+                        <td><input id="input_ip" type="text" value="{$info.platformip}"/></td>
+                    </tr>
+                    <tr>
+                        <td>上次任务执行时间</td>
+                        <td>{$info.lasttasktime}</td>
+                    </tr>
+                    <tr>
+                        <td>压缩任务状态</td>
+                        <td>{$info.compresstaskstatus}</td>
+                    </tr>
+                    <tr>
+                        <td>错误原因</td>
+                        <td>{$info.errorreason}</td>
+                    </tr>
+                </table>
+
+                <span><button class="btn" id="modifyBtn" type="button">修改</button> </span>
+                <span style="margin-left:20px;"><button class="btn" id="queryBtn" type="button">查询</button> </span>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+        $(document).ready(function(){
+
+            function f_check_IP(ip)
+            {
+                var re=/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;//正则表达式
+                if(re.test(ip))
+                {
+                    if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256)
+                        return true;
+                }
+                return false;
+            }
+
+            $("#menu1").addClass("active");
+
+            $("#queryBtn").click(function(){
+
+                window.location.reload();
+
+            });
+
+            $("#modifyBtn").click(function(){
+
+                var ip = $("#input_ip").val().trim();
+
+                if (ip.length == 0){
+                    alert("ip 不能为空");
+                    return;
+                }
+
+                if (!f_check_IP(ip)){
+                    alert("ip 不合法");
+                    return;
+                }
+
+                if(!confirm("是否确定修改?")){
+                    return
+                }
+
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "__ROOT__/index.php/Home/Platform/update?ip="+ip,
+                    async: true,
+                    error: function(request) {
+                        $("#content").html("");
+                        alert("连接失败");
+                    },
+                    success: function(data) {
+                        if(data.status == 0) {
+                            alert("修改成功");
+                            window.location.reload();
+                        }
+                        else{
+                            alert(data.errormsg);
+                        }
+
+                    }
+                });
+
+
+            });
+
+        });
+
+
+</script>
+
+</body>
+</html>

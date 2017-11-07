@@ -1,0 +1,15 @@
+use EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_LogicDeviceGroup_del_all`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_LogicDeviceGroup_del`;
+
+DELIMITER $$
+
+CREATE /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_LogicDeviceGroup_del` BEFORE DELETE
+    ON LogicDeviceGroupConfig
+    FOR EACH ROW BEGIN 
+    DELETE FROM LogicDeviceMapGroupConfig  WHERE GroupID = old.GroupID;
+    END$$
+
+DELIMITER ;

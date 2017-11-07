@@ -1,0 +1,13 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB_MOBILE' AND table_name = 'PollActionConfig' AND column_name = 'StreamType') THEN  
+        ALTER TABLE PollActionConfig ADD StreamType INTEGER UNSIGNED DEFAULT 1; 
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

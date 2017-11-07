@@ -1,0 +1,29 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordTimeSchedConfig' AND column_name = 'DeviceIndex') THEN  
+        ALTER TABLE RecordTimeSchedConfig ADD DeviceIndex INTEGER UNSIGNED DEFAULT 0;  
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordTimeSchedConfig' AND column_name = 'RecordSchedIndex') THEN  
+        ALTER TABLE RecordTimeSchedConfig ADD RecordSchedIndex INTEGER UNSIGNED DEFAULT 0;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordTimeSchedConfig' AND column_name = 'DayInWeek') THEN  
+        ALTER TABLE RecordTimeSchedConfig ADD DayInWeek INTEGER UNSIGNED;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordTimeSchedConfig' AND column_name = 'BeginTime') THEN  
+        ALTER TABLE RecordTimeSchedConfig ADD BeginTime INTEGER UNSIGNED;  
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'RecordTimeSchedConfig' AND column_name = 'EndTime') THEN  
+        ALTER TABLE RecordTimeSchedConfig ADD EndTime INTEGER UNSIGNED;
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

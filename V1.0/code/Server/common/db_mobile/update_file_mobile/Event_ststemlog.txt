@@ -1,0 +1,11 @@
+USE `EV9000LOG_MOBILE`;
+
+SET GLOBAL event_scheduler = ON;
+
+DROP EVENT IF EXISTS event_systemlog_del;
+CREATE EVENT event_systemlog_del
+ON SCHEDULE EVERY 1 DAY
+STARTS DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')
+ENABLE
+DO
+DELETE FROM `EV9000LOG_MOBILE`.`SystemLogRecord` WHERE `EV9000LOG_MOBILE`.`SystemLogRecord`.`LogTime` < (UNIX_TIMESTAMP(NOW())-(SELECT `KeyValue` FROM `EV9000DB_MOBILE`.`SystemConfig` WHERE `EV9000DB_MOBILE`.`SystemConfig`.`KeyName` LIKE 'DaysToKeepForSystemLog'))

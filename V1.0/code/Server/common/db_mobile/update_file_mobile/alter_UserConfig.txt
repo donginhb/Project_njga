@@ -1,0 +1,17 @@
+use EV9000DB_MOBILE;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'UserConfig' AND column_name = 'RealName') THEN  
+        ALTER TABLE UserConfig ADD RealName VARCHAR(36) DEFAULT NULL; 
+END IF;   
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_name = 'UserConfig' AND column_name = 'Tel') THEN  
+        ALTER TABLE UserConfig ADD Tel VARCHAR(36) DEFAULT NULL;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

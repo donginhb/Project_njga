@@ -1,0 +1,33 @@
+USE `EV9000DB`;
+
+-- 开始数据库事件开关
+SET GLOBAL event_scheduler = ON;
+
+-- 创建事件  每天0点开始工作  将实时诊断输入放入历史诊断数据表
+DROP EVENT IF EXISTS event_HisDiagnosis_daily;
+
+DELIMITER $$
+CREATE EVENT event_HisDiagnosis_daily
+ON SCHEDULE EVERY 1 DAY
+STARTS DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')
+ENABLE
+DO BEGIN
+INSERT INTO `IVASHisDiagnosis` ( `DeviceID`, `DiagnosisTime`, `DiagnosisFlag`, `VideoLost`, `VideoOcclusion`, 
+ `VideoFrozen`, `VideoLum`, `VideoShake`, `VideoSnow`, `VideoBlur`, `VideoHue`)
+SELECT A.`DeviceID`, 
+DATE_SUB(CURDATE(),INTERVAL 1 DAY),
+IF(STR_TO_DATE(IFNULL(B.`DiagnosisTime`,'1970-01-01 08:00:00'),'%Y-%m-%d %H:%i:%s') >= DATE_SUB(CURDATE(),INTERVAL 1 DAY),1,0),
+IFNULL(B.`VideoLost`,0) AS `VideoLost`,
+IFNULL(B.`VideoOcclusion`,0) AS `VideoOcclusion`,
+IFNULL(B.`VideoFrozen`,0) AS `VideoFrozen`,
+IFNULL(B.`VideoLum`,0) AS `VideoLum`,
+IFNULL(B.`VideoShake`,0) AS `VideoShake`,
+IFNULL(B.`VideoSnow`,0) AS `VideoSnow`,
+IFNULL(B.`VideoBlur`,0) AS `VideoBlur`,
+IFNULL(B.`VideoHue`,0) AS `VideoHue`
+FROM (SELECT `DeviceName`,`DeviceID` FROM `GBLogicDeviceConfig` WHERE `Enable` <> 0 AND `DeviceType` IN(113,131,132)) A
+LEFT JOIN `IVASRealDiagnosis` B ON A.`DeviceID` = B.`DeviceID` ;
+
+DELETE FROM `IVASHisDiagnosis` WHERE `DiagnosisTime` <  DATE_SUB(CURDATE(),INTERVAL 31 DAY) ;
+END $$
+DELIMITER ;

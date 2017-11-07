@@ -1,0 +1,5 @@
+use EV9000LOG_MOBILE;
+
+REPAIR TABLE SystemLogRecord;
+REPAIR TABLE AlarmRecord; 
+REPAIR TABLE UserLogRecord;

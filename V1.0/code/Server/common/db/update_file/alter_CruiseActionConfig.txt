@@ -1,0 +1,13 @@
+use EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change; 
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN  
+
+IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema = 'EV9000DB' AND table_name = 'CruiseActionConfig' AND column_name = 'SortID') THEN  
+        ALTER TABLE CruiseActionConfig ADD SortID INTEGER UNSIGNED DEFAULT 0 NOT NULL;  
+END IF;
+
+END$$  
+DELIMITER ;  
+CALL schema_change();

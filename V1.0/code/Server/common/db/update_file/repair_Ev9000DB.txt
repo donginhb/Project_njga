@@ -1,0 +1,93 @@
+use EV9000DB;
+
+REPAIR TABLE AlarmDeployment;
+REPAIR TABLE AlarmRecord;
+REPAIR TABLE BoardConfig;
+
+REPAIR TABLE ControlDeviceTable;
+REPAIR TABLE BoardNetConfig;
+REPAIR TABLE CruiseActionConfig;
+
+REPAIR TABLE CruiseConfig;
+REPAIR TABLE CruisePermissionConfig;
+REPAIR TABLE DeviceConfigTable;
+
+REPAIR TABLE DeviceStatusRecord;
+REPAIR TABLE DiagnosisChanel;
+REPAIR TABLE DiagnosisSchedule;
+
+REPAIR TABLE FaultRecord;
+REPAIR TABLE FileRecord;
+REPAIR TABLE FileTagRecord;
+
+REPAIR TABLE GBCodes;
+REPAIR TABLE GBLogicDeviceConfig;
+REPAIR TABLE GBPhyDeviceConfig;
+
+REPAIR TABLE GBPhyDevicePermConfig;
+REPAIR TABLE GBPhyDeviceTempConfig;
+REPAIR TABLE HUSEv9000DeviceMap;
+REPAIR TABLE IVASBehaviorRules;
+
+REPAIR TABLE IVASChanelSource;
+REPAIR TABLE IVASCount;
+REPAIR TABLE IVASDeploymentTime;
+
+REPAIR TABLE IVASHisDiagnosis;
+REPAIR TABLE IVASOptions;
+REPAIR TABLE IVASRealDiagnosis;
+
+REPAIR TABLE IvsOperator;
+REPAIR TABLE LableRecordTable;
+REPAIR TABLE LogicDeviceGroupConfig;
+
+REPAIR TABLE LogicDeviceMapGroupConfig;
+REPAIR TABLE ManageRecord;
+REPAIR TABLE MgwLogicDeviceConfig;
+REPAIR TABLE MgwOperator;
+REPAIR TABLE MgwOptions;
+REPAIR TABLE MgwPhyDeviceConfig;
+
+REPAIR TABLE OnLineUserConfig;
+REPAIR TABLE OuterDeviceConfig;
+REPAIR TABLE PlanActionConfig;
+
+REPAIR TABLE PlanConfig;
+REPAIR TABLE PlanLinkageConfig;
+REPAIR TABLE PlanPermissionConfig;
+REPAIR TABLE PollActionConfig;
+REPAIR TABLE PollConfig;
+REPAIR TABLE PollPermissionConfig;
+
+REPAIR TABLE PresetConfig;
+REPAIR TABLE RecordSchedConfig;
+REPAIR TABLE RecordServerConfig;
+
+REPAIR TABLE RecordTimeSchedConfig;
+REPAIR TABLE RouteDevicePermConfig;
+REPAIR TABLE SystemConfig;
+
+REPAIR TABLE SystemLogRecord;
+REPAIR TABLE TopologyPhyDeviceConfig;
+REPAIR TABLE UnGBPhyDeviceChannelConfig;
+
+REPAIR TABLE UnGBPhyDeviceConfig;
+REPAIR TABLE UserConfig;
+REPAIR TABLE UserCruiseConfig;
+REPAIR TABLE UserDevicePermConfig;
+REPAIR TABLE UserGroupConfig;
+REPAIR TABLE UserGroupDevicePermConfig;
+
+REPAIR TABLE UserLogicDeviceGroupConfig;
+REPAIR TABLE UserLogicDeviceMapGroupConfig;
+REPAIR TABLE UserLogRecord;
+
+REPAIR TABLE UserMapGroupConfig;
+REPAIR TABLE UserPlanConfig;
+REPAIR TABLE UserPollConfig;
+REPAIR TABLE WebInterFaceConfig;
+REPAIR TABLE webserver_device_run_logs;
+REPAIR TABLE webserver_list;
+
+REPAIR TABLE webserver_propertys;
+REPAIR TABLE webserver_runtime_property;

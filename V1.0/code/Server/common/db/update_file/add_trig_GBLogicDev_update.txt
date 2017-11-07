@@ -1,0 +1,57 @@
+USE EV9000DB;
+
+DROP TRIGGER IF EXISTS `EV9000DB`.`trig_GBLogicDev_update`;
+DROP TRIGGER IF EXISTS `EV9000DB`.`add_trig_GBLogicDev_update`;
+
+DELIMITER $$
+
+CREATE
+    /*[DEFINER = { user | CURRENT_USER }]*/
+    TRIGGER `EV9000DB`.`trig_GBLogicDev_update` BEFORE UPDATE
+    ON `EV9000DB`.`GBLogicDeviceConfig`
+    FOR EACH ROW BEGIN
+        IF new.Status!=old.Status THEN
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'EV9000DB_MOBILE' AND table_name ='GBLogicDeviceConfig';
+            IF (@maccount>0) THEN
+                 UPDATE EV9000DB_MOBILE.GBLogicDeviceConfig SET EV9000DB_MOBILE.GBLogicDeviceConfig.Status=new.Status WHERE EV9000DB_MOBILE.GBLogicDeviceConfig.ID=old.ID; 
+            END IF;
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'app_server_db' AND table_name ='pointconfig';
+            IF (@maccount>0) THEN
+                 UPDATE app_server_db.pointconfig SET app_server_db.pointconfig.status=new.Status WHERE app_server_db.pointconfig.device_id=old.ID; 
+            END IF;
+        END IF; 
+
+        IF new.CtrlEnable!=old.CtrlEnable THEN
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'EV9000DB_MOBILE' AND table_name ='GBLogicDeviceConfig';
+            IF (@maccount>0) THEN
+                 UPDATE EV9000DB_MOBILE.GBLogicDeviceConfig SET EV9000DB_MOBILE.GBLogicDeviceConfig.CtrlEnable=new.CtrlEnable WHERE EV9000DB_MOBILE.GBLogicDeviceConfig.ID=old.ID; 
+            END IF;
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'app_server_db' AND table_name ='pointconfig';
+            IF (@maccount>0) THEN
+                 UPDATE app_server_db.pointconfig SET app_server_db.pointconfig.ctrl_enable=new.CtrlEnable WHERE app_server_db.pointconfig.device_id=old.ID; 
+            END IF;
+        END IF; 
+
+        IF new.StreamCount!=old.StreamCount THEN
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'EV9000DB_MOBILE' AND table_name ='GBLogicDeviceConfig';
+            IF (@maccount>0) THEN
+                 UPDATE EV9000DB_MOBILE.GBLogicDeviceConfig SET EV9000DB_MOBILE.GBLogicDeviceConfig.StreamCount=new.StreamCount WHERE EV9000DB_MOBILE.GBLogicDeviceConfig.ID=old.ID; 
+            END IF;
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'app_server_db' AND table_name ='pointconfig';
+            IF (@maccount>0) THEN
+                 UPDATE app_server_db.pointconfig SET app_server_db.pointconfig.stream_count=new.StreamCount WHERE app_server_db.pointconfig.device_id=old.ID; 
+            END IF;
+        END IF; 
+
+        IF new.DeviceName!=old.DeviceName THEN
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'EV9000DB_MOBILE' AND table_name ='GBLogicDeviceConfig';
+            IF (@maccount>0) THEN
+                 UPDATE EV9000DB_MOBILE.GBLogicDeviceConfig SET EV9000DB_MOBILE.GBLogicDeviceConfig.DeviceName=new.DeviceName WHERE EV9000DB_MOBILE.GBLogicDeviceConfig.ID=old.ID; 
+            END IF;
+            SELECT COUNT(*) INTO @maccount FROM `INFORMATION_SCHEMA`.`TABLES` WHERE table_schema = 'app_server_db' AND table_name ='pointconfig';
+            IF (@maccount>0) THEN
+                 UPDATE app_server_db.pointconfig SET app_server_db.pointconfig.point_name=new.DeviceName WHERE app_server_db.pointconfig.device_id=old.ID; 
+            END IF;
+        END IF; 
+    END$$
+DELIMITER ;

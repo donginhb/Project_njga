@@ -1,0 +1,11 @@
+use app_server_db;
+
+REPAIR TABLE favorate_config;
+REPAIR TABLE group_config;
+REPAIR TABLE notify_record;
+REPAIR TABLE picture_record;
+REPAIR TABLE pointconfig;
+REPAIR TABLE serverconfig;
+REPAIR TABLE user_point_config;
+REPAIR TABLE userconfig;
+REPAIR TABLE video_record;

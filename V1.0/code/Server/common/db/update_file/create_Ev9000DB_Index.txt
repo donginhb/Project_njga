@@ -1,0 +1,17 @@
+USE EV9000DB;
+
+DROP PROCEDURE IF EXISTS schema_change;  
+DELIMITER $$
+CREATE PROCEDURE schema_change() BEGIN 
+
+   IF NOT EXISTS (SELECT * FROM information_schema.statistics WHERE table_schema = 'EV9000DB' AND table_name = 'AlarmRecord' AND index_name = 'AlarmRecordStartTime') THEN  
+      ALTER TABLE `AlarmRecord` ADD INDEX AlarmRecordStartTime (`StartTime`);
+   END IF;  
+   
+   IF NOT EXISTS (SELECT * FROM information_schema.statistics WHERE table_schema = 'EV9000DB' AND table_name = 'LogicDeviceMapGroupConfig' AND index_name = 'indx_DeviceIndex') THEN  
+      ALTER TABLE `LogicDeviceMapGroupConfig` ADD INDEX indx_DeviceIndex (`DeviceIndex`);
+   END IF;     
+   
+END$$
+DELIMITER ;  
+CALL schema_change(); 
