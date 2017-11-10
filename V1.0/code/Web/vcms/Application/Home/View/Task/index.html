@@ -84,45 +84,67 @@
                     </div>
                     <button style="margin-left: 10px;width: 100px;" id="queryBtn" class="btn btn-success">查询</button>
                     <button style="margin-left: 10px;width: 100px;" id="exportBtn" class="btn">导出到Excel</button>
-                </div>
+                    <button type="button" data-toggle="modal" data-target="#myModal" style="margin-left: 10px;width: 100px;" id="echarts" class="btn btn-error">生成图表</button>
+
+
+
+                          <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document" style="width:960px;height:600px;">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel"></h4>
+                                  </div>
+                                  <div class="modal-body" id="main" style="width: 900px;height:600px;">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <!-- <button type="button" class="btn btn-primary">确认</button> -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
                 <br>
                 <h4>查询结果</h4>
                 <div style="border:1px solid #ccc;padding:5px 0px;">
                 <table>
-                    <tr>
-                        <td style="padding:0 5px;">查询的任务总数：<font color="blue">{$querycount}</font></td>
-                        <td style="padding:0 5px;"><div style="margin-left:10px;">成功的任务总数：<font color="green">{$allres.successnum}</font></div></td>
-                        <td style="padding:0 5px;"><div style="margin-left:10px;">失败的任务总数：<font color="red">{$allres.failnum}</font>，失败任务详细统计：</div></td>
-                        <td style="padding:0 5px;">01.云创平台登录失败(0x01001)任务数：<font color="red">{$allres.error1num}</td>
-                        <td style="padding:0 5px;">06.分析源视频文件内容失败(0x01008)任务数：<font color="red">{$allres.error8num}</font></td>
+                    <tr id="data">
+                        <td style="padding:0 5px;" data-val="{$querycount}">查询的任务总数：<font color="blue">{$querycount}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.successnum}"><div style="margin-left:10px;">成功的任务总数：<font color="green">{$allres.successnum}</font></div></td>
+                        <td style="padding:0 5px;" data-val="{$allres.failnum}"><div style="margin-left:10px;">失败的任务总数：<font color="red">{$allres.failnum}</font>，失败任务详细统计：</div></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error1num}">01.云创平台登录失败(0x01001)任务数：<font color="red">{$allres.error1num}</td>
+                        <td style="padding:0 5px;" data-val="{$allres.error8num}">06.分析源视频文件内容失败(0x01008)任务数：<font color="red">{$allres.error8num}</font></td>
                     </tr>
-                    <tr>
+                    <tr id="data1">
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;">02.获取源视频文目录失败(0x01002)任务数：<font color="red">{$allres.error2num}</font></td>
-                        <td style="padding:0 5px;">07.压缩源视频文件失败(0x01006)任务数：<font color="red">{$allres.error6num}</div></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error2num}">02.获取源视频文目录失败(0x01002)任务数：<font color="red">{$allres.error2num}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error6num}">07.压缩源视频文件失败(0x01006)任务数：<font color="red">{$allres.error6num}</div></td>
                     </tr>   
-                    <tr>
+                    <tr id="data2">
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;">03.获取源视频文件失败(0x01003)任务数：<font color="red">{$allres.error3num}</font></td>
-                        <td style="padding:0 5px;">08.压缩后文件写入到新目录失败(0x01005)任务数：<font color="red">{$allres.error5num}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error3num}">03.获取源视频文件失败(0x01003)任务数：<font color="red">{$allres.error3num}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error5num}">08.压缩后文件写入到新目录失败(0x01005)任务数：<font color="red">{$allres.error5num}</font></td>
                     </tr>
-                    <tr>
+                    <tr id="data3">
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;">04.获取源视频文件大小失败(0x01004)任务数：<font color="red">{$allres.error4num}</font></td>
-                        <td style="padding:0 5px;">09.删除临时文件失败(0x01009)任务数：<font color="red">{$allres.error9num}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error4num}">04.获取源视频文件大小失败(0x01004)任务数：<font color="red">{$allres.error4num}</font></td>
+                        <td style="padding:0 5px;" data-val="{$allres.error9num}">09.删除临时文件失败(0x01009)任务数：<font color="red">{$allres.error9num}</font></td>
                     </tr>
-                    <tr>
+                    <tr id="data4">
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;">05.源视频文件格式不支持(0x01007)任务数：<font color="red">{$allres.error7num}</font></td>
-                        <td style="padding:0 5px;">10.压缩任务结果未返回(0x02000)任务数：<font color="red">{$allres.error10num}</font></td>
+                        <td style="padding:0 5px;" data-cal="{$allres.error7num}">05.源视频文件格式不支持(0x01007)任务数：<font color="red">{$allres.error7num}</font></td>
+                        <td style="padding:0 5px;" data-cal="{$allres.error10num}">10.压缩任务结果未返回(0x02000)任务数：<font color="red">{$allres.error10num}</font></td>
                     </tr>
                 </table>
                 <table id="data_table" style="width:100%;text-align:center;"  class="table table-striped">
@@ -286,7 +308,7 @@
                     return;
                 }
 
-                var query = "begintime="+beginTime+"&endtime="+endTime+
+                var  query = "begintime="+beginTime+"&endtime="+endTime+
                                 "&taskresult="+taskresult+"&deviceip="+deviceip+"&errorcode="+
                                  errorcode+"&createbegintime="+createbegintime+"&createendtime="+createendtime+
                                 "&zrvbegin_begintime="+zrvbegin_begintime+"&zrvbegin_endtime="+zrvbegin_endtime+
@@ -531,11 +553,69 @@
                         width : "auto",        //宽度
                         modal : true,
                     });
-
-                    
                 },
             })
         }
+
+
+        $('#echarts').click(function( ) {
+            var myChart = echarts.init(document.getElementById('main'));
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '查询结果统计'
+                },
+                tooltip: {},
+                legend: {
+                    data:['数量']
+                },
+                grid: {
+                    y2: 110
+                },
+                xAxis: {
+                    data: ["查询的任务总数","成功的任务总数","失败的任务总数","云创平台登录失败任务数","获取源视频文目录失败任务数","获取源视频文件失败任务数","获取源视频文件大小失败任务数","源视频文件格式不支持任务数","分析源视频文件内容失败任务数","压缩源视频文件失败任务数","压缩后文件写入到新目录失败任务数","删除临时文件失败任务数","压缩任务结果未返回任务数"],
+                    axisLabel:{
+                        interval:0,
+                        rotate:30,
+                    }
+                },
+                yAxis: {},
+                series: [{
+                            label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                            }
+                        },
+                    name: '数量',
+                    type: 'bar',
+                    data: [$("#data td:nth-child(1)").attr('data-val'),$("#data td:nth-child(2)").attr('data-val'), $("#data td:nth-child(3)").attr('data-val'), $("#data td:nth-child(4)").attr('data-val'),$("#data td:nth-child(5)").attr('data-val'), $("#data1 td:nth-child(4)").attr('data-val'),$("#data1 td:nth-child(5)").attr('data-val'),$("#data2 td:nth-child(4)").attr('data-val'),$("#data2 td:nth-child(5)").attr('data-val'),$("#data3 td:nth-child(4)").attr('data-val'),$("#data3 td:nth-child(5)").attr('data-val'),$("#data3 td:nth-child(4)").attr('data-val'),$("#data3 td:nth-child(5)").attr('data-val')],
+                                //配置样式
+            itemStyle: {   
+                //通常情况下：
+                normal:{  
+　　　　　　　　　　　　//每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
+                    color: function (params){
+                        var colorList = [
+                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                           '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                        ];
+                        return colorList[params.dataIndex];
+                    }
+                },
+                //鼠标悬停时：
+                emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            },
+                }]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        });
 </script>
 
 </body>
