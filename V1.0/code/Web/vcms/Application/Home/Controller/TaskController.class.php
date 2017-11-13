@@ -104,7 +104,7 @@ class TaskController extends Controller {
         }else{
             $this->assign('taskresult',"-1");
         }
-
+ 
         $errorcode = I('errorcode', '', 'htmlspecialchars');
         if (strlen($errorcode)>0 && $errorcode != "-1"){
             $map['ErrorCode'] = intval(hexdec($errorcode));
@@ -126,7 +126,8 @@ class TaskController extends Controller {
             $this->assign('page',$show);// 赋值分页输出
             $list = M()->table("ZRVCompressTaskInfo")->order('uploadtime desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         }
-        $allres=M()->table("ZRVCompressTaskInfo")->field('errorcode')->where($map)->select();
+	
+        $allres=M()->table("ZRVCompressTaskInfo")->field('errorcode,filesize,yshfilesize')->where($map)->select();
         $this->assign("querycount",$count);        
         //dump($list);
         $failnum=0;
@@ -144,6 +145,9 @@ class TaskController extends Controller {
         $error8num=0;
         $error9num=0;
         $error10num=0;
+        
+        $filesize=0;
+        $yshfilesize=0;
         
         for ($i=0;$i<count($list);$i++){
             $date = date("Y-m-d H:i:s",$list[$i]["uploadtime"]);
@@ -227,6 +231,10 @@ class TaskController extends Controller {
                     break;    
                 case 200:
                     $successnum++;
+                    $test1 = intval($allres[$j]["filesize"]);
+                    $filesize = $filesize + $test1;
+                    $test2 = intval($allres[$j]["yshfilesize"]);
+                    $yshfilesize = $yshfilesize + $test2;
                     break;
             }
         }
@@ -243,6 +251,62 @@ class TaskController extends Controller {
         $allres["error8num"]=$error8num;
         $allres["error9num"]=$error9num;
         $allres["error10num"]=$error10num;
+        
+        $hhl=round(($yshfilesize/$filesize)*100, 2);
+        $allres["hhl"]=$hhl.'%';
+        $allres["hhl1"]='压缩率:'.$hhl.'%';
+                
+        if(strlen($filesize) > 12){
+            $filesize = $filesize/(1024*1024*1024*1024);
+            $allres["filesize"]=round($filesize, 2).'TB';
+            $allres["filesize1"]='成功任务压缩前文件总大小:'.round($filesize, 2).'TB';
+        }
+        elseif(strlen($filesize) > 9){
+            $filesize = $filesize/(1024*1024*1024);
+            $allres["filesize"]=round($filesize, 2).'GB';
+             $allres["filesize1"]='成功任务压缩前文件总大小:'.round($filesize, 2).'GB';
+        }
+        elseif(strlen($filesize) > 6){
+            $filesize = $filesize/(1024*1024);
+            $allres["filesize"]=round($filesize, 2).'MB';
+            $allres["filesize1"]='成功任务压缩前文件总大小:'.round($filesize, 2).'MB';
+        }
+        elseif(strlen($filesize) > 3){
+            $filesize = $filesize/1024;
+            $allres["filesize"]=round($filesize, 2).'KB';
+            $allres["filesize1"]='成功任务压缩前文件总大小:'.round($filesize, 2).'KB';
+        }
+        else
+        {
+            $allres["filesize"]=round($filesize, 2).'Byte';
+            $allres["filesize1"]='成功任务压缩前文件总大小:'.round($filesize, 2).'Byte';
+        }
+        
+        if(strlen($yshfilesize) > 12){
+            $yshfilesize = $yshfilesize/(1024*1024*1024*1024);
+            $allres["yshfilesize"]=round($yshfilesize, 2).'TB';
+            $allres["yshfilesize1"]='压缩后文件总大小:'.round($yshfilesize, 2).'TB';
+        }
+        elseif(strlen($yshfilesize) > 9){
+            $yshfilesize = $yshfilesize/(1024*1024*1024);
+            $allres["yshfilesize"]=round($yshfilesize, 2).'GB';
+            $allres["yshfilesize1"]='压缩后文件总大小:'.round($yshfilesize, 2).'GB';
+        }
+        elseif(strlen($yshfilesize) > 6){
+            $yshfilesize = $yshfilesize/(1024*1024);
+            $allres["yshfilesize"]=round($yshfilesize, 2).'MB';
+            $allres["yshfilesize1"]='压缩后文件总大小:'.round($yshfilesize, 2).'MB';
+        }
+        elseif(strlen($yshfilesize) > 3){
+            $yshfilesize = $yshfilesize/1024;
+            $allres["yshfilesize"]=round($yshfilesize, 2).'KB';
+            $allres["yshfilesize1"]='压缩后文件总大小:'.round($yshfilesize, 2).'KB';
+        }
+        else
+        {
+            $allres["yshfilesize"]=round($yshfilesize, 2).'Byte';
+            $allres["yshfilesize1"]='压缩后文件总大小:'.round($yshfilesize, 2).'Byte';
+        }
 
         $this->assign("list",$list);
         $this->assign("allres",$allres);
@@ -602,11 +666,11 @@ class TaskController extends Controller {
             $info["zrvcompressendtime"] = $date3;
             
             $filesize1 = intval($info["filesize"]);
-            $filesize2 = number_format($filesize1);
+            $filesize2 = number_format($filesize1).' Byte';
             $info["filesize"] = $filesize2;
             
             $yshfilesize1 = intval($info["yshfilesize"]);
-            $yshfilesize2 = number_format($yshfilesize1);
+            $yshfilesize2 = number_format($yshfilesize1).' Byte';
             $info["yshfilesize"] = $yshfilesize2;   
         }
 
@@ -693,11 +757,11 @@ class TaskController extends Controller {
             $info["zrvcompressendtime"] = $date3;
             
             $filesize1 = intval($info["filesize"]);
-            $filesize2 = number_format($filesize1);
+            $filesize2 = number_format($filesize1).' Byte';
             $info["filesize"] = $filesize2;
             
             $yshfilesize1 = intval($info["yshfilesize"]);
-            $yshfilesize2 = number_format($yshfilesize1);
+            $yshfilesize2 = number_format($yshfilesize1).' Byte';
             $info["yshfilesize"] = $yshfilesize2;            
         }
 

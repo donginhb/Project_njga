@@ -84,10 +84,7 @@
                     </div>
                     <button style="margin-left: 10px;width: 100px;" id="queryBtn" class="btn btn-success">查询</button>
                     <button style="margin-left: 10px;width: 100px;" id="exportBtn" class="btn">导出到Excel</button>
-                    <button type="button" data-toggle="modal" data-target="#myModal" style="margin-left: 10px;width: 100px;" id="echarts" class="btn btn-error">生成图表</button>
-
-
-
+                    <button type="button" data-toggle="modal" data-target="#myModal" style="margin-left: 10px;width: 100px;" id="echarts" class="btn btn-error">图表统计</button>
                           <!-- Modal -->
                             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document" style="width:960px;height:600px;">
@@ -106,7 +103,6 @@
                               </div>
                             </div>
 
-
                 <br>
                 <h4>查询结果</h4>
                 <div style="border:1px solid #ccc;padding:5px 0px;">
@@ -120,21 +116,21 @@
                     </tr>
                     <tr id="data1">
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"" data-val="{$allres.filesize1}"><div style="margin-left:10px;">成功的原始文件总大小：<font color="green">{$allres.filesize}</font></div></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;" data-val="{$allres.error2num}">02.获取源视频文目录失败(0x01002)任务数：<font color="red">{$allres.error2num}</font></td>
                         <td style="padding:0 5px;" data-val="{$allres.error6num}">07.压缩源视频文件失败(0x01006)任务数：<font color="red">{$allres.error6num}</div></td>
                     </tr>   
                     <tr id="data2">
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"" data-val="{$allres.yshfilesize1}"><div style="margin-left:10px;">压缩后文件总大小：<font color="green">{$allres.yshfilesize}</font></div></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;" data-val="{$allres.error3num}">03.获取源视频文件失败(0x01003)任务数：<font color="red">{$allres.error3num}</font></td>
                         <td style="padding:0 5px;" data-val="{$allres.error5num}">08.压缩后文件写入到新目录失败(0x01005)任务数：<font color="red">{$allres.error5num}</font></td>
                     </tr>
                     <tr id="data3">
                         <td style="padding:0 5px;"></td>
-                        <td style="padding:0 5px;"></td>
+                        <td style="padding:0 5px;"" data-val="{$allres.hhl1}"><div style="margin-left:10px;">压缩率：<font color="red">{$allres.hhl}</font></div></td>
                         <td style="padding:0 5px;"></td>
                         <td style="padding:0 5px;" data-val="{$allres.error4num}">04.获取源视频文件大小失败(0x01004)任务数：<font color="red">{$allres.error4num}</font></td>
                         <td style="padding:0 5px;" data-val="{$allres.error9num}">09.删除临时文件失败(0x01009)任务数：<font color="red">{$allres.error9num}</font></td>
@@ -557,7 +553,6 @@
             })
         }
 
-
         $('#echarts').click(function( ) {
             var myChart = echarts.init(document.getElementById('main'));
             // 指定图表的配置项和数据
@@ -567,7 +562,11 @@
                 },
                 tooltip: {},
                 legend: {
-                    data:['数量']
+                    data:[$("#data1 td:nth-child(2)").attr('data-val'),$("#data2 td:nth-child(2)").attr('data-val'),$("#data3 td:nth-child(2)").attr('data-val')],
+                    textStyle:{
+                        color:'#C1232B',
+                        fontSize:14
+                    }
                 },
                 grid: {
                     y2: 110
@@ -597,9 +596,9 @@
 　　　　　　　　　　　　//每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
                     color: function (params){
                         var colorList = [
-                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
-                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
-                           '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                           '#27727B','#B5C334','#C1232B','#C1232B','#C1232B',
+                           '#C1232B','#C1232B','#C1232B','#C1232B','#C1232B',
+                           '#C1232B','#C1232B','#C1232B','#C1232B','#C1232B'
                         ];
                         return colorList[params.dataIndex];
                     }

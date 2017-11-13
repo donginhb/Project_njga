@@ -546,11 +546,11 @@ class TaskassignController extends Controller {
             $info["zrvcompressendtime"] = $date3;
 
             $filesize1 = intval($info["filesize"]);
-            $filesize2 = number_format($filesize1);
+            $filesize2 = number_format($filesize1).' Byte';
             $info["filesize"] = $filesize2;
             
             $yshfilesize1 = intval($info["yshfilesize"]);
-            $yshfilesize2 = number_format($yshfilesize1);
+            $yshfilesize2 = number_format($yshfilesize1).' Byte';
             $info["yshfilesize"] = $yshfilesize2;   
             //dump($info);
         }
